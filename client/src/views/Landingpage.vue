@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Loginform v-if="!isRegister" @signIn="signIn" @goToSignUpPage="goToSignUpPage"></Loginform>
-        <RegisterForm v-if="isRegister" @goToLoginPage="goToLoginPage" @signUp="signUp"></RegisterForm>
+        <Loginform v-if="!isRegister" @goToSignUpPage="goToSignUpPage"></Loginform>
+        <RegisterForm v-if="isRegister" @goToLoginPage="goToLoginPage"></RegisterForm>
     </div>
 </template>
 
@@ -16,21 +16,20 @@ export default {
     },
     data() {
         return {
-            isRegister: false
+
         }
     },
     methods: {
-        signIn(signInForm) {
-            this.$router.push({name: "about", params: {id: 5}});
-        },
-        signUp(signUpForm) {
-            this.isRegister = false
-        },
         goToSignUpPage() {
-            this.isRegister = true;
+            this.$store.commit('GOTOREGISTERPAGE', true)
         },
         goToLoginPage() {
-            this.isRegister = false;
+            this.$store.commit('GOTOREGISTERPAGE', false)
+        }
+    },
+    computed: {
+        isRegister () {
+            return this.$store.state.isRegister
         }
     }
 }

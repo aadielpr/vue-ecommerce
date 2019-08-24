@@ -36,47 +36,33 @@
             <div style="display: flex; min-width: 25%; margin-bottom: 20px; justify-content: space-around; color: #969592;">
                 <span>Don't have an account ?</span><a href="#" @click.prevent="signUp" style="text-decoration: underline;">Register here</a>
             </div>
-            <div style="display: flex; min-width: 25%; margin: 0; justify-content: space-around;">
-                <b-button v-google-signin-button="clientId" variant="outline-secondary"><i class="fab fa-google"></i> Continue with Google</b-button>
-            </div>
         </b-container>
     </div>
 </template>
 
 <script>
-import GoogleSignInButton from 'vue-google-signin-button-directive'
 export default {
-    directives: {
-        GoogleSignInButton
-    },
-    data() {
-        return {
-            form: {
-                email: '',
-                password: ''
-            },
-            clientId: process.env.VUE_APP_CLIENT_ID
-        }
-    },
-    methods: {
-        signIn() {
-            this.$emit('signIn', this.form);
-        },
-        signUp() {
-            this.$emit('goToSignUpPage');
-        },
-        OnGoogleAuthSuccess (idToken) {
-            this.$emit('signInGoogle', idToken);
-        },
-        OnGoogleAuthFail (error) {
-            console.log(error)
-        }
-    },
-    computed: {
-        password: function () {
-            return this.form.password.length > 6
-        }
+  data() {
+    return {
+      form: {
+        email: '',
+        password: ''
+      },
     }
+  },
+  methods: {
+    signIn() {
+      this.$store.dispatch('userSignIn', this.form)
+    },
+    signUp() {
+      this.$emit('goToSignUpPage');
+    }
+  },
+  computed: {
+    password: function () {
+      return this.form.password.length >= 6
+    }
+  }
 }
 </script>
 

@@ -62,15 +62,15 @@ export default {
     },
     methods: {
         back() {
-            this.$emit("goToLoginPage")
+            this.$emit('goToLoginPage')
         },
         signUp() {
-            this.$emit('signUp', this.form)
+            this.$store.dispatch('userRegister', this.form)
         }
     },
     computed: {
         password: function () {
-            return this.form.password.length > 6
+            return this.form.password.length >= 6
         }
     }
 }

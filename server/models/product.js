@@ -12,8 +12,11 @@ const productSchema = new Schema({
         min: [1, "Price should greater than 1"],
         validate: {
             validator: function(value) {
-                if (value !== typeof Number) {
+                if (typeof value !== 'number') {
                     return false
+                }
+                else {
+                    return true
                 }
             },
             message: "Price should only contain numeric"
@@ -25,15 +28,23 @@ const productSchema = new Schema({
         min: [0, "Stock should not lower than 0"],
         validate: {
             validator: function (value) {
-                if (value !== typeof Number) {
+                if (typeof value !== 'number') {
                     return false
                 }
-            }
+                else {
+                    return true
+                }
+            },
+            message: "stock should only contain numeric"
         }
     },
     image: {
         type: String,
         required: [true, "Image cannot be empty"]
+    },
+    details: {
+        type: String,
+        required: [true, "Details can't be empty"]
     }
 })
 

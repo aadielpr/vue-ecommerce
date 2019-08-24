@@ -40,13 +40,7 @@ const userSchema = new Schema({
             },
             message: "Email has been used"
         }
-    },
-    Cart: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Product'
-        }
-    ]
+    }
 },{
     versionKey: false
 })
