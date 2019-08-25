@@ -2,7 +2,7 @@
 
 ##Link deploy 
 <br>
-[mini-wp.adielpratama.com](http://mini-wp.adielpratama.com "Mini-Wp")
+[e-commerce.adielpratama.com](http://mini-wp.adielpratama.com "Mini-Wp")
 
 ## Installation
 run this command before use this application :)
