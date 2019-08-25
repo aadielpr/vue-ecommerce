@@ -3,9 +3,9 @@ import Vuex from 'vuex'
 import router from './router'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-const user_url = "http://localhost:3000/user/"
-const product_url = "http://localhost:3000/product/"
-const cart_url = "http://localhost:3000/cart/"
+const user_url = "http://34.67.168.95:80/user/"
+const product_url = "http://34.67.168.95:80/product/"
+const cart_url = "http://34.67.168.95:80/cart/"
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -73,6 +73,10 @@ export default new Vuex.Store({
             })
         },
         userSignIn ({ commit }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'post',
                 url: `${user_url}signIn`,
@@ -82,6 +86,7 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
+                Swal.close()
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('username', response.data.username)
                 localStorage.setItem('junk', response.data.id)
@@ -190,6 +195,10 @@ export default new Vuex.Store({
             })
         },
         findOneProduct({ commit }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'get',
                 url: `${product_url}${payload}`,
@@ -198,13 +207,18 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
+                Swal.close()
                 commit('ONEPRODUCT', response.data)
             })
             .catch(err => {
-                console.log(err)
+               
             })
         },
         addToCart({ commit }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'post',
                 url: `${cart_url}addToCart`,
@@ -217,6 +231,7 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
+                Swal.close
                 Swal.fire({
                     type: 'success',
                     title: 'Item add to your cart',
@@ -225,10 +240,14 @@ export default new Vuex.Store({
                 })
             })
             .catch(err => {
-                console.log(err)
+                
             })
         },
         findUserCart({ commit }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'get',
                 url: `${cart_url}findUserCart`,
@@ -237,6 +256,7 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
+                Swal.close()
                 if(response.data.length !== 0) {
                     const userProfile = response.data[0].user;
                     const userCart = response.data.map((el) => { return {
@@ -258,7 +278,7 @@ export default new Vuex.Store({
                 }
             })
             .catch(err => {
-                console.log(err)
+                
             })
         },
         removeCart({ commit, dispatch }, payload) {
@@ -283,10 +303,10 @@ export default new Vuex.Store({
                 })
                 setTimeout(() => {
                     dispatch('findUserCart')
-                }, 1700)
+                }, 1600)
             })
             .catch(err => {
-                console.log(err)
+                
             })
         },
         checkOut ({ commit, dispatch }, payload) {
@@ -317,6 +337,7 @@ export default new Vuex.Store({
                 })
                 setTimeout(() => {
                     dispatch('findUserCart')
+                    dispatch('findUserTransaction')
                 }, 1700)
             })
             .catch(err => {
@@ -329,6 +350,10 @@ export default new Vuex.Store({
             })
         },
         findUserTransaction ({ commit }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'get',
                 url: `${cart_url}findUserTransaction`,
@@ -337,6 +362,7 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
+                Swal.close()
                 if(response.data.length !== 0) {
                     let arrayOfTransaction = [];
                     response.data.forEach((el) => {
@@ -355,7 +381,7 @@ export default new Vuex.Store({
                 }
             })
             .catch(err => {
-                console.log(err)
+              
             })
         }
     }
