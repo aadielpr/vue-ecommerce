@@ -5,6 +5,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 const user_url = "http://localhost:3000/user/"
 const product_url = "http://localhost:3000/product/"
+const cart_url = "http://localhost:3000/cart/"
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -12,20 +13,26 @@ export default new Vuex.Store({
         isLogin: false,
         isRegister: false,
         products: [],
-        product: {}
+        product: {},
+        userCart: [],
+        userProfile: {}
     },
     mutations: {
         SIGNIN(state, payload) {
-            state.isLogin = payload
+            state.isLogin = payload;
         },
         GOTOREGISTERPAGE(state, payload) {
-            state.isRegister = payload
+            state.isRegister = payload;
         },
         FILLPRODUCT(state, payload) {
-            state.products = payload
+            state.products = payload;
         },
         ONEPRODUCT(state, payload) {
-            state.product = payload
+            state.product = payload;
+        },
+        FILLUSERPROFILE(state, payload) {
+            state.userCart = payload.userCart;
+            state.userProfile = payload.userProfile
         }
     },
     actions: {
@@ -103,7 +110,7 @@ export default new Vuex.Store({
                 localStorage.clear()
                 commit('SIGNIN', false)
                 router.push('/')
-            }, 1800)
+            }, 1700)
         },
         checkToken({ commit }, payload) {
             axios({
@@ -121,6 +128,10 @@ export default new Vuex.Store({
             })
         },
         fetchProduct({ commit }) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
             axios({
                 method: 'get',
                 url: `${product_url}`,
@@ -129,7 +140,12 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
-                commit('FILLPRODUCT', response.data)
+                setTimeout(() => {
+                    Swal.close()
+                }, 1000)
+                setTimeout(() => {
+                    commit('FILLPRODUCT', response.data)
+                }, 1100)
             })
             .catch(err => {
                 console.log(err)
@@ -153,7 +169,7 @@ export default new Vuex.Store({
         addToCart({ commit }, payload) {
             axios({
                 method: 'post',
-                url: `${user_url}addToCart`,
+                url: `${cart_url}addToCart`,
                 data: {
                     productId: payload.id,
                     quantity: payload.quantity
@@ -163,7 +179,65 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
-                console.log(response.data)
+                Swal.fire({
+                    type: 'success',
+                    title: 'Item add to your cart',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        findUserCart({ commit }, payload) {
+            axios({
+                method: 'get',
+                url: `${cart_url}findUserCart`,
+                headers: {
+                    token: localStorage.token
+                }
+            })
+            .then(response => {
+                const userProfile = response.data[0].user;
+                const userCart = response.data.map((el) => { return {
+                    cartId: el._id,
+                    quantity: el.quantity,
+                    status: el.status,
+                    ...el.product
+                }})
+                commit('FILLUSERPROFILE', {
+                    userProfile,
+                    userCart
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        removeCart({ commit, dispatch }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
+            axios({
+                method: 'delete',
+                url: `${cart_url}deleteCart/${payload}`,
+                headers: {
+                    token: localStorage.token
+                }
+            })
+            .then(response => {
+                Swal.close()
+                Swal.fire({
+                    type: 'success',
+                    title: 'Delete success !',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    dispatch('findUserCart')
+                }, 1700)
             })
             .catch(err => {
                 console.log(err)

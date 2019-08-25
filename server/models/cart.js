@@ -12,6 +12,10 @@ const cartSchema = new Schema({
     },
     quantity: {
         type: Number
+    },
+    status: {
+        type: Boolean,
+        default: false
     }
 },{
     versionKey: false,
