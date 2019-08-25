@@ -12,8 +12,20 @@ const getPublicUrl = (filename) => {
 }
 
 const sendUploadToGCS = (req, res, next) => {
-    if(!req.file) {
+    if(req.body.image && !req.file) {
         next()
+    }
+    else if (!req.file) {
+        throw({
+            status: 406,
+            message: "Image cannot be empty"
+        })
+    }
+    else if (!req.file.mimetype.includes('image')) {
+        throw({
+            status: 406,
+            message: "File type should be image"
+        })
     }
     else {
           const gcsname = Date.now() + req.file.originalname

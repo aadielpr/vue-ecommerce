@@ -31,6 +31,15 @@ export default {
         isRegister () {
             return this.$store.state.isRegister
         }
+    },
+    created() {
+        if (localStorage.token) {
+            this.$store.dispatch('checkToken', localStorage.token)
+        }
+        else {
+            this.$store.commit('SIGNIN', false)
+            this.$router.push('/')
+        }
     }
 }
 </script>

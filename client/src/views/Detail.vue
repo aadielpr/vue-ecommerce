@@ -12,7 +12,7 @@
       </b-card-text>
       <div style="display:flex; width: 100%;">
         <b-form-input type="number" min="0.00" size="sm" v-model="value" style="width: 20%; heigth: 100%; margin-right: 30px;"></b-form-input>
-        <b-button variant="dark" @click.prevent="addToCart(product._id)">Add To Cart</b-button>
+        <b-button variant="dark" @click.prevent="addToCart(product._id)" :disabled="product.stock == 0">Add To Cart</b-button>
       </div>
     </b-card>
 </b-container>

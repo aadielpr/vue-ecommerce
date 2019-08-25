@@ -3,7 +3,7 @@
         <b-container style="display:flex; justify-content: center; width: 100%; height: 100vh; align-items: center; flex-direction: column;">    
             <div style="display: flex; min-width: 25%; align-items:center; justify-content: center; margin-bottom: 30px; align-items: center;">
                 <img src="../assets/payment-method.png" style="width: 50px; height: 50px; margin-right: 20px;">
-                <h5 style="margin: 0;">Register</h5>
+                <h5 style="margin: 0;">7WONDER</h5>
             </div>
             <b-form style="display: flex; flex-direction: column; min-width: 25%; padding: 0; margin-bottom: 10px;"
                 @submit.prevent="signUp"

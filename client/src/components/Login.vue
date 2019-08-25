@@ -3,7 +3,7 @@
         <b-container style="display:flex; justify-content: center; width: 100%; height: 100vh; align-items: center; flex-direction: column;">    
             <div style="display: flex; min-width: 25%; align-items:center; justify-content: center; margin-bottom: 30px; align-items: center;">
                 <img src="../assets/payment-method.png" style="width: 50px; height: 50px; margin-right: 20px;">
-                <h5 style="margin: 0;">Login</h5>
+                <h5 style="margin: 0;">7WONDER</h5>
             </div>
             <b-form style="display: flex; flex-direction: column; min-width: 25%; padding: 0; margin-bottom: 10px;"
                 @submit.prevent="signIn"
@@ -36,18 +36,26 @@
             <div style="display: flex; min-width: 25%; margin-bottom: 20px; justify-content: space-around; color: #969592;">
                 <span>Don't have an account ?</span><a href="#" @click.prevent="signUp" style="text-decoration: underline;">Register here</a>
             </div>
+            <div>
+              <b-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</b-button>
+            </div>
         </b-container>
     </div>
 </template>
 
 <script>
+import GoogleSignInButton from 'vue-google-signin-button-directive'
 export default {
+    directives:{
+        GoogleSignInButton
+    },
   data() {
     return {
       form: {
         email: '',
         password: ''
       },
+      clientId: '552587421887-16nnsk6qohvfi0psso6l7cma0s329scb.apps.googleusercontent.com'
     }
   },
   methods: {
@@ -56,6 +64,12 @@ export default {
     },
     signUp() {
       this.$emit('goToSignUpPage');
+    },
+    OnGoogleAuthSuccess (idToken) {
+        this.$store.dispatch('signInGoogle',idToken)
+    },
+    OnGoogleAuthFail (error) {
+        console.log(error)
     }
   },
   computed: {

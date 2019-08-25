@@ -11,7 +11,7 @@ class ProductController {
             details
         })
         .then(results => {
-            res.status(200).json(results)
+            res.status(201).json(results)
         })
         .catch(next)
     }
@@ -26,6 +26,34 @@ class ProductController {
         Product.findById(req.params.id)
         .then(results => {
             res.status(200).json(results)
+        })
+        .catch(next)
+    }
+
+    static destroy(req, res, next) {
+        const id = req.params.id
+        Product.findByIdAndDelete(id)
+        .then(results => {
+            let image_name = results.image.split('/')
+            image_name = image_name[image_name.length - 1]
+            req.file = image_name
+            next()
+        })
+        .catch(next)
+    }
+
+    static update (req, res, next) {
+        let obj = {}
+        req.body.name && (obj.name = req.body.name)
+        req.body.price && (obj.price = Number(req.body.price))
+        req.body.stock && (obj.stock = Number(req.body.stock))
+        req.body.image && (obj.image = req.body.image)
+        req.body.details && (obj.details = req.body.details)
+        Product.findByIdAndUpdate(req.params.id,obj,{
+            new: true
+        })
+        .then(updated => {
+            res.status(200).json(updated)
         })
         .catch(next)
     }

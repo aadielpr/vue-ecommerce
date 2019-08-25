@@ -11,7 +11,9 @@ const cartSchema = new Schema({
         ref: 'Product'
     },
     quantity: {
-        type: Number
+        type: Number,
+        required: [true, "quantity can't be empty"],
+        min: [1, "At least 1 quantity to add to your Cart"]
     },
     status: {
         type: Boolean,

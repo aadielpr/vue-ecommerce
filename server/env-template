@@ -1,0 +1,8 @@
+PORT= your port
+secret_key= secret key for your jwt
+SECRET_PASSWORD= secret password for google sign in
+CLOUD_BUCKET= your google cloud bucket name 
+GCLOUD_PROJECT= your google cloud project id
+FILE_PATH=your google credential json file path
+client_id=your google client id from api credential for google sign in
+uri=your mongo db collection url 

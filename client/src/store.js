@@ -15,7 +15,8 @@ export default new Vuex.Store({
         products: [],
         product: {},
         userCart: [],
-        userProfile: {}
+        userProfile: {},
+        userTransaction: []
     },
     mutations: {
         SIGNIN(state, payload) {
@@ -33,9 +34,44 @@ export default new Vuex.Store({
         FILLUSERPROFILE(state, payload) {
             state.userCart = payload.userCart;
             state.userProfile = payload.userProfile
+        },
+        FILLUSERTRANSACTION(state, payload) {
+            state.userTransaction = payload
         }
     },
     actions: {
+        signInGoogle({ commit }, payload) {
+            axios({
+                method: 'post',
+                url: `${user_url}signInGoogle`,
+                data: {
+                    id_token: payload
+                }
+            })
+            .then(response => {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('username', response.data.username)
+                localStorage.setItem('junk', response.data.id)
+                Swal.fire({
+                    type: 'success',
+                    title: 'Login success !',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    commit('SIGNIN', true)
+                    router.push('/dashboard')
+                }, 1700)
+            })
+            .catch(err => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Register fail !',
+                    text: `${err.response.data}`,
+                    showConfirmButton: true
+                })
+            })
+        },
         userSignIn ({ commit }, payload) {
             axios({
                 method: 'post',
@@ -51,7 +87,7 @@ export default new Vuex.Store({
                 localStorage.setItem('junk', response.data.id)
                 Swal.fire({
                     type: 'success',
-                    title: 'Register success !',
+                    title: 'Login success !',
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -63,7 +99,7 @@ export default new Vuex.Store({
             .catch(err => {
                 Swal.fire({
                     type: 'error',
-                    title: 'Register fail !',
+                    title: 'Login fail !',
                     text: `${err.response.data}`,
                     showConfirmButton: true
                 })
@@ -121,10 +157,16 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
-                console.log(response.data)
+                if(response.data == 'Correct') {
+                    router.push('/dashboard')
+                    commit('SIGNIN', true)
+                }
+                else {
+                    router.push('/')
+                }
             })
             .catch(err => {
-                console.log(err)
+                router.push('/')
             })
         },
         fetchProduct({ commit }) {
@@ -140,12 +182,8 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
-                setTimeout(() => {
-                    Swal.close()
-                }, 1000)
-                setTimeout(() => {
-                    commit('FILLPRODUCT', response.data)
-                }, 1100)
+                Swal.close()
+                commit('FILLPRODUCT', response.data)
             })
             .catch(err => {
                 console.log(err)
@@ -199,17 +237,25 @@ export default new Vuex.Store({
                 }
             })
             .then(response => {
-                const userProfile = response.data[0].user;
-                const userCart = response.data.map((el) => { return {
-                    cartId: el._id,
-                    quantity: el.quantity,
-                    status: el.status,
-                    ...el.product
-                }})
-                commit('FILLUSERPROFILE', {
-                    userProfile,
-                    userCart
-                })
+                if(response.data.length !== 0) {
+                    const userProfile = response.data[0].user;
+                    const userCart = response.data.map((el) => { return {
+                        cartId: el._id,
+                        quantity: el.quantity,
+                        status: el.status,
+                        ...el.product
+                    }})
+                    commit('FILLUSERPROFILE', {
+                        userProfile,
+                        userCart
+                    })    
+                }
+                else {
+                    commit('FILLUSERPROFILE', {
+                        userCart: [],
+                        userProfile: {}
+                    })
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -238,6 +284,75 @@ export default new Vuex.Store({
                 setTimeout(() => {
                     dispatch('findUserCart')
                 }, 1700)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        checkOut ({ commit, dispatch }, payload) {
+            Swal.fire({
+                title: 'please wait..'
+            })
+            Swal.showLoading()
+            axios({
+                method: 'post',
+                url: `${cart_url}buyProduct`,
+                data: {
+                    userId: payload.userId,
+                    address: payload.address,
+                    zipCode: payload.zipCode,
+                    phoneNumber: payload.phoneNumber,
+                },
+                headers: {
+                    token: localStorage.token
+                }
+            })
+            .then(response => {
+                Swal.close()
+                Swal.fire({
+                    type: 'success',
+                    title: 'Checkout Success !',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setTimeout(() => {
+                    dispatch('findUserCart')
+                }, 1700)
+            })
+            .catch(err => {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Fail add to cart !',
+                    text: `${err.response.data}`,
+                    showConfirmButton: true
+                })
+            })
+        },
+        findUserTransaction ({ commit }, payload) {
+            axios({
+                method: 'get',
+                url: `${cart_url}findUserTransaction`,
+                headers: {
+                    token: localStorage.token
+                }
+            })
+            .then(response => {
+                if(response.data.length !== 0) {
+                    let arrayOfTransaction = [];
+                    response.data.forEach((el) => {
+                        let purchase = el.createdAt;
+                        el.cart.forEach((el) => {
+                            arrayOfTransaction.push({
+                                _id: el._id,
+                                name: el.product.name,
+                                quantity: el.quantity,
+                                totalPrice: el.product.price * el.quantity,
+                                purchase: purchase
+                            })
+                        })
+                    })
+                    commit('FILLUSERTRANSACTION', arrayOfTransaction)
+                }
             })
             .catch(err => {
                 console.log(err)

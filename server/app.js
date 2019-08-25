@@ -8,9 +8,9 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const routes = require('./routes')
 const errhandler = require('./middlewares/errhandler')
+const uri = process.env.uri
 
-
-mongoose.connect('mongodb://localhost:27017/e-commerce', { useNewUrlParser: true }, function (err) {
+mongoose.connect(uri, { useNewUrlParser: true }, function (err) {
     if (err) {
         console.log(err)
     }

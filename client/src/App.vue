@@ -25,11 +25,8 @@ export default {
         }
     },
     created () {
-        // localStorage.setItem('token', 'tetets')
         if (localStorage.token) {
-            this.$store.commit('SIGNIN', true)
-            this.$router.push('/dashboard')
-            // this.$store.dispatch('checkToken', localStorage.token)
+            this.$store.dispatch('checkToken', localStorage.token)
         }
         else {
             this.$store.commit('SIGNIN', false)

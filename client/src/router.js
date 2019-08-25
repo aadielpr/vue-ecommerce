@@ -4,7 +4,7 @@ import Landingpage from './views/Landingpage.vue'
 import Dashboardpage from './views/Dashboard.vue'
 import Detail from './views/Detail.vue'
 import User from './views/User.vue'
-import Profile from './components/UserProfile.vue'
+import Transaction from './components/Transaction.vue'
 import Cart from './components/Cart.vue'
 Vue.use(Router)
 
@@ -32,7 +32,7 @@ export default new Router({
         children:[
             {
                 path: 'transaction',
-                component: Profile
+                component: Transaction
             },
             {
                 path: 'cart',
