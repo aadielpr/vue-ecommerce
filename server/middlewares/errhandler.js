@@ -1,5 +1,4 @@
 module.exports = (err, req, res, next) => {
-    console.log(err)
     if(err) {
         if(err.name === 'ValidationError') {
             let arrayOfError = [];

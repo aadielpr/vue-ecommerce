@@ -1,4 +1,4 @@
-# MINI-WP
+# E-COMMERCE
 
 ##Link deploy 
 <br>
